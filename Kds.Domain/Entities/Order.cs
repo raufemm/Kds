@@ -25,6 +25,28 @@ namespace Kds.Domain.Entities
             Items.Add(item);
         }
 
+        public void Update(string customerName, OrderStatus orderStatus)
+        {
+            CustomerName = customerName;
+            Status = orderStatus;
+        }
+
+        public void UpdateItem(Guid orderItemId, OrderItem item)
+        {
+            var itemSelected = Items?.FirstOrDefault(x => x.Id == orderItemId);
+
+            if (itemSelected != null)
+            {
+                itemSelected.Name = item.Name;
+                itemSelected.Quantity = item.Quantity;
+                itemSelected.Notes = item.Notes;
+            }
+            else
+            {
+                throw new InvalidOperationException("Item not found.");
+            }
+        }
+
         public void RemoveItem(OrderItem item)
         {
             Items?.Remove(item);

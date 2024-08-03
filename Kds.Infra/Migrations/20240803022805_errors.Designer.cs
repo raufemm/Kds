@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kds.Infra.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240801021548_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240803022805_errors")]
+    partial class errors
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,11 +28,9 @@ namespace Kds.Infra.Migrations
 
             modelBuilder.Entity("Kds.Domain.Entities.Order", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("OrderId");
 
                     b.Property<string>("CustomerName")
                         .IsRequired()
@@ -52,8 +50,9 @@ namespace Kds.Infra.Migrations
 
             modelBuilder.Entity("Kds.Domain.Entities.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("OrderItemId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -63,10 +62,15 @@ namespace Kds.Infra.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems", "dbo");
                 });
@@ -75,7 +79,7 @@ namespace Kds.Infra.Migrations
                 {
                     b.HasOne("Kds.Domain.Entities.Order", null)
                         .WithMany("Items")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

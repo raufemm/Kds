@@ -10,7 +10,10 @@ namespace Kds.Infra.Map
         {
             builder.ToTable("OrderItems");
 
-            builder.HasKey(i => i.Id);
+            builder.Property(i => i.Id)
+                .HasColumnName("OrderItemId")
+                .ValueGeneratedNever()
+                .IsRequired();
 
             builder.Property(i => i.Name)
                 .IsRequired()

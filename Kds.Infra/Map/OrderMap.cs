@@ -10,11 +10,11 @@ namespace Kds.Infra.Map
         {
             builder.ToTable("Orders");
 
-            builder.HasKey(o => o.Id);
-
             builder.Property(o => o.Id)
-                .ValueGeneratedOnAdd();
-
+                .HasColumnName("OrderId")
+                .ValueGeneratedNever()
+                .IsRequired();
+                
             builder.Property(o => o.OrderTime)
                 .IsRequired();
 
@@ -27,8 +27,14 @@ namespace Kds.Infra.Map
 
             builder.HasMany(o => o.Items)
                 .WithOne()
-                .HasForeignKey(i => i.Id)
+                .HasForeignKey(x => x.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //.HasMany(ct => (ICollection<SettlementClosure>)ct.SettlementClosures)
+            //    .WithOne()
+            //    .HasForeignKey(x => x.ContractId);
+
+            builder.Navigation(p => p.Items).AutoInclude();
         }
     }
 }
